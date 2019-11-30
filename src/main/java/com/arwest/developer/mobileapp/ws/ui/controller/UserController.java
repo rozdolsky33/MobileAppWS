@@ -1,5 +1,8 @@
-package com.arwest.developer.mobileappws.ui.controller;
+package com.arwest.developer.mobileapp.ws.ui.controller;
 
+
+import com.arwest.developer.mobileapp.ws.ui.model.request.UserDetailsRequestModel;
+import com.arwest.developer.mobileapp.ws.ui.model.response.UserRest;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,8 +15,8 @@ public class UserController {
         return "get uer was called";
     }
     @PostMapping
-    public String createUser(){
-        return "create user was called";
+    public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails){
+        return null ;
     }
     @PutMapping
     public String updateUser(){

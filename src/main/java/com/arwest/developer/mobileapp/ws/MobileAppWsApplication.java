@@ -1,4 +1,4 @@
-package com.arwest.developer.mobileappws;
+package com.arwest.developer.mobileapp.ws;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
