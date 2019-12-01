@@ -1,5 +1,8 @@
 package com.arwest.developer.mobileapp.ws.security;
 
+import com.arwest.developer.mobileapp.ws.SpringApplicationContext;
+import com.arwest.developer.mobileapp.ws.service.UserService;
+import com.arwest.developer.mobileapp.ws.shared.dto.UserDto;
 import com.arwest.developer.mobileapp.ws.ui.model.request.UserLoginRequestModel;
 
 import java.io.IOException;
@@ -60,6 +63,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.TOKEN_SECRET).compact();
 
+        UserService userService = (UserService) SpringApplicationContext.getBean("userServiceImpl");
+        UserDto userDto = userService.getUser(userName);
+
         response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
+        response.addHeader("UserID", userDto.getUserId());
+
     }
 }

@@ -1,7 +1,7 @@
 package com.arwest.developer.mobileapp.ws.service.impl;
 
 import com.arwest.developer.mobileapp.ws.io.entity.UserEntity;
-import com.arwest.developer.mobileapp.ws.repository.UserRepository;
+import com.arwest.developer.mobileapp.ws.io.repositories.UserRepository;
 import com.arwest.developer.mobileapp.ws.service.UserService;
 import com.arwest.developer.mobileapp.ws.shared.Utils;
 import com.arwest.developer.mobileapp.ws.shared.dto.UserDto;
@@ -47,6 +47,19 @@ public class UserServiceImpl implements UserService {
 
         UserDto returnValue = new UserDto();
         BeanUtils.copyProperties(storedUserDetails, returnValue);
+
+        return returnValue;
+    }
+
+    @Override
+    public UserDto getUser(String email) {
+
+        UserEntity userEntity = userRepository.findUserByEmail(email);
+
+        if(userEntity == null)throw new UsernameNotFoundException(email);
+
+        UserDto returnValue = new UserDto();
+        BeanUtils.copyProperties(userEntity, returnValue);
 
         return returnValue;
     }

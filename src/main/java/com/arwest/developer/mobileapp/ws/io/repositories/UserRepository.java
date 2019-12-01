@@ -1,4 +1,4 @@
-package com.arwest.developer.mobileapp.ws.repository;
+package com.arwest.developer.mobileapp.ws.io.repositories;
 
 import com.arwest.developer.mobileapp.ws.io.entity.UserEntity;
 import org.springframework.data.repository.CrudRepository;
