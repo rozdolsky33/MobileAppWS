@@ -13,14 +13,16 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
+
     @Autowired
     private UserService userService;
-
 
     @GetMapping
     public String getUser(){
         return "get uer was called";
     }
+
     @PostMapping
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails){
 
@@ -38,6 +40,7 @@ public class UserController {
     public String updateUser(){
         return "update User was called";
     }
+
     @DeleteMapping
     public String deleteUser(){
         return "delete user was called";
