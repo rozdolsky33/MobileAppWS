@@ -20,7 +20,7 @@ public class UserController {
 
     @GetMapping
     public String getUser(){
-        return "get uer was called";
+        return "get user was called";
     }
 
     @PostMapping
