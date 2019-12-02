@@ -1,9 +1,11 @@
 package com.arwest.developer.mobileapp.ws.ui.controller;
 
 
+import com.arwest.developer.mobileapp.ws.exceptions.UserServiceException;
 import com.arwest.developer.mobileapp.ws.service.UserService;
 import com.arwest.developer.mobileapp.ws.shared.dto.UserDto;
 import com.arwest.developer.mobileapp.ws.ui.model.request.UserDetailsRequestModel;
+import com.arwest.developer.mobileapp.ws.ui.model.response.ErrorMessages;
 import com.arwest.developer.mobileapp.ws.ui.model.response.UserRest;
 import org.springframework.beans.BeanUtils;
 
@@ -35,9 +37,11 @@ public class UserController {
             consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
             )
-    public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails){
+    public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) throws Exception {
 
         UserRest returnValue = new UserRest();
+
+        if (userDetails.getFirstName().isEmpty()) throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userDetails, userDto);  // incoming request populates dto object
