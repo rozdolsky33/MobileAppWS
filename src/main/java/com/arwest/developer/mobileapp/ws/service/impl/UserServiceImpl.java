@@ -64,6 +64,19 @@ public class UserServiceImpl implements UserService {
         return returnValue;
     }
 
+    @Override
+    public UserDto getUserByUserId(String userId) {
+
+        UserDto returnValue = new UserDto();
+        UserEntity userEntity = userRepository.findByUserId(userId);
+
+        if(userEntity == null)throw new UsernameNotFoundException(userId);
+
+        BeanUtils.copyProperties(userEntity, returnValue);
+
+        return returnValue;
+    }
+
     /*
     UserServiceImpl implements UserService interface that extends org.springframework.security.core.userdetails.UserDetailsService;
     helper method to load a user in the process of sign in.
