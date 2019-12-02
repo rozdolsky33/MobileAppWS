@@ -5,6 +5,9 @@ import com.arwest.developer.mobileapp.ws.io.repositories.UserRepository;
 import com.arwest.developer.mobileapp.ws.service.UserService;
 import com.arwest.developer.mobileapp.ws.shared.Utils;
 import com.arwest.developer.mobileapp.ws.shared.dto.UserDto;
+import com.arwest.developer.mobileapp.ws.ui.model.response.ErrorMessages;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -73,6 +76,22 @@ public class UserServiceImpl implements UserService {
         if(userEntity == null)throw new UsernameNotFoundException(userId);
 
         BeanUtils.copyProperties(userEntity, returnValue);
+
+        return returnValue;
+    }
+
+    @Override
+    public UserDto updateUser(String userId, UserDto user) {
+        UserDto returnValue = new UserDto();
+        UserEntity userEntity = userRepository.findByUserId(userId);
+
+        if(userEntity == null)throw new UsernameNotFoundException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+
+        userEntity.setFirstName(user.getFirstName());
+        userEntity.setLastName(user.getLastName());
+
+        UserEntity updatedUserDetails = userRepository.save(userEntity);
+        returnValue = new ModelMapper().map(updatedUserDetails,UserDto.class);
 
         return returnValue;
     }
