@@ -1,7 +1,6 @@
 
 package com.arwest.developer.mobileapp.ws.shared;
 
-import javafx.beans.binding.StringBinding;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;

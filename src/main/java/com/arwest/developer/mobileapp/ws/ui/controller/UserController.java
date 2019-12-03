@@ -23,6 +23,7 @@ public class UserController {
         produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
         )
     public UserRest getUser(@PathVariable String id){
+
         UserRest returnValue = new UserRest();
 
         UserDto userDto = userService.getUserByUserId(id);
@@ -68,7 +69,10 @@ public class UserController {
         return returnValue;
     }
 
-    @DeleteMapping
+    @DeleteMapping(value = "/{id}",
+            consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
+    )
     public String deleteUser(){
         return "delete user was called";
     }
