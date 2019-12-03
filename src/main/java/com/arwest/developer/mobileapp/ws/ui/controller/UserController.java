@@ -1,7 +1,5 @@
 package com.arwest.developer.mobileapp.ws.ui.controller;
 
-
-import com.arwest.developer.mobileapp.ws.io.entity.UserEntity;
 import com.arwest.developer.mobileapp.ws.service.UserService;
 import com.arwest.developer.mobileapp.ws.shared.dto.UserDto;
 import com.arwest.developer.mobileapp.ws.ui.model.request.UserDetailsRequestModel;
@@ -9,12 +7,14 @@ import com.arwest.developer.mobileapp.ws.ui.model.response.OperationStatusModel;
 import com.arwest.developer.mobileapp.ws.ui.model.response.RequestOperationName;
 import com.arwest.developer.mobileapp.ws.ui.model.response.RequestOperationStatus;
 import com.arwest.developer.mobileapp.ws.ui.model.response.UserRest;
-import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.BeanUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -87,4 +87,22 @@ public class UserController {
         returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
         return returnValue;
     }
+
+    @GetMapping(produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public List<UserRest>getUsers(@RequestParam(value = "page", defaultValue = "0") int page,
+                                  @RequestParam(value = "limit", defaultValue = "2") int limit){
+
+        List<UserRest>returnValue = new ArrayList<>();
+
+        List<UserDto>users = userService.getUsers(page,limit);
+
+        for (UserDto userDto : users){
+            UserRest userModel = new UserRest();
+            BeanUtils.copyProperties(userDto, userModel);
+            returnValue.add(userModel);
+        }
+
+        return returnValue;
+    }
+
 }
