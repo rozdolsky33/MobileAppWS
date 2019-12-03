@@ -1,10 +1,15 @@
 package com.arwest.developer.mobileapp.ws.ui.controller;
 
 
+import com.arwest.developer.mobileapp.ws.io.entity.UserEntity;
 import com.arwest.developer.mobileapp.ws.service.UserService;
 import com.arwest.developer.mobileapp.ws.shared.dto.UserDto;
 import com.arwest.developer.mobileapp.ws.ui.model.request.UserDetailsRequestModel;
+import com.arwest.developer.mobileapp.ws.ui.model.response.OperationStatusModel;
+import com.arwest.developer.mobileapp.ws.ui.model.response.RequestOperationName;
+import com.arwest.developer.mobileapp.ws.ui.model.response.RequestOperationStatus;
 import com.arwest.developer.mobileapp.ws.ui.model.response.UserRest;
+import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.BeanUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +30,8 @@ public class UserController {
     public UserRest getUser(@PathVariable String id){
 
         UserRest returnValue = new UserRest();
-
         UserDto userDto = userService.getUserByUserId(id);
+
         BeanUtils.copyProperties(userDto, returnValue);
 
         return returnValue;
@@ -70,10 +75,16 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{id}",
-            consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
     )
-    public String deleteUser(){
-        return "delete user was called";
+    public OperationStatusModel deleteUser(@PathVariable String id){
+
+        OperationStatusModel returnValue = new OperationStatusModel();
+        returnValue.setOperationName(RequestOperationName.DELETE.name());
+
+        userService.deleteUser(id);
+
+        returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        return returnValue;
     }
 }

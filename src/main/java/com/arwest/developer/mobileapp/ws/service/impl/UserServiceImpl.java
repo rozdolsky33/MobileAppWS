@@ -6,8 +6,6 @@ import com.arwest.developer.mobileapp.ws.service.UserService;
 import com.arwest.developer.mobileapp.ws.shared.Utils;
 import com.arwest.developer.mobileapp.ws.shared.dto.UserDto;
 import com.arwest.developer.mobileapp.ws.ui.model.response.ErrorMessages;
-
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -73,7 +71,7 @@ public class UserServiceImpl implements UserService {
         UserDto returnValue = new UserDto();
         UserEntity userEntity = userRepository.findByUserId(userId);
 
-        if(userEntity == null)throw new UsernameNotFoundException(userId);
+        if(userEntity == null)throw new UsernameNotFoundException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
 
         BeanUtils.copyProperties(userEntity, returnValue);
 
@@ -95,6 +93,14 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(updatedUserDetails, returnValue);
 
         return returnValue;
+    }
+
+    @Override
+    public void deleteUser(String id) {
+        UserEntity userEntity = userRepository.findByUserId(id);
+        if(userEntity == null)
+            throw new UsernameNotFoundException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        userRepository.delete(userEntity);
     }
 
     /*
