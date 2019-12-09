@@ -1,15 +1,33 @@
-package com.arwest.developer.mobileapp.ws.shared.dto;
+package com.arwest.developer.mobileapp.ws.io.entity;
 
-public class AddressDTO {
+import javax.persistence.*;
+import java.io.Serializable;
 
+@Entity(name="addresses")
+public class AddressEntity implements Serializable {
+
+
+    private static final long serialVersionUID = 8723918538230348668L;
+
+
+    @Id
+    @GeneratedValue
     private long id;
+    @Column(length = 30, nullable = false)
     private String addressId;
+    @Column(length = 30, nullable = false)
     private String city;
+    @Column(length = 20, nullable = false)
     private String country;
+    @Column(length = 100, nullable = false)
     private String streetName;
+    @Column(length = 7, nullable = false)
     private String postalCode;
+    @Column(length = 10, nullable = false)
     private String type;
-    private UserDto userDetails;
+    @ManyToOne
+    @JoinColumn(name="users_id")
+    private UserEntity userEntity;
 
     public long getId() {
         return id;
@@ -67,11 +85,11 @@ public class AddressDTO {
         this.type = type;
     }
 
-    public UserDto getUserDetails() {
-        return userDetails;
+    public UserEntity getUserEntity() {
+        return userEntity;
     }
 
-    public void setUserDetails(UserDto userDetails) {
-        this.userDetails = userDetails;
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
     }
 }

@@ -1,12 +1,16 @@
 package com.arwest.developer.mobileapp.ws.io.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-@Entity(name = "users")
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
+
+@Entity
+@Table(name="users")
 public class UserEntity implements Serializable {
 
 
@@ -30,12 +34,16 @@ public class UserEntity implements Serializable {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private String encryptedPassword;
 
     private String emailVerificationToken;
 
     @Column(nullable = false)
     private Boolean emailVerificationStatus = false;
+
+    @OneToMany(mappedBy="userEntity", cascade=CascadeType.ALL)
+    private List<AddressEntity>addressEntities;
 
 
     public long getId() {
@@ -108,5 +116,13 @@ public class UserEntity implements Serializable {
 
     public void setEmailVerificationStatus(Boolean emailVerificationStatus) {
         this.emailVerificationStatus = emailVerificationStatus;
+    }
+
+    public List<AddressEntity> getAddressEntities() {
+        return addressEntities;
+    }
+
+    public void setAddressEntities(List<AddressEntity> addressEntities) {
+        this.addressEntities = addressEntities;
     }
 }

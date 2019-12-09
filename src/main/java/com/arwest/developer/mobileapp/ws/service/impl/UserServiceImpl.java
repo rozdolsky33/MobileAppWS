@@ -4,8 +4,12 @@ import com.arwest.developer.mobileapp.ws.io.entity.UserEntity;
 import com.arwest.developer.mobileapp.ws.io.repositories.UserRepository;
 import com.arwest.developer.mobileapp.ws.service.UserService;
 import com.arwest.developer.mobileapp.ws.shared.Utils;
+import com.arwest.developer.mobileapp.ws.shared.dto.AddressDTO;
 import com.arwest.developer.mobileapp.ws.shared.dto.UserDto;
 import com.arwest.developer.mobileapp.ws.ui.model.response.ErrorMessages;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +26,8 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     UserRepository userRepository;
@@ -40,18 +46,33 @@ public class UserServiceImpl implements UserService {
         if(userRepository.findUserByEmail(user.getEmail()) != null){
             throw new RuntimeException("Record already exist");
         }
+         /**
+          * Look through list of addresses that is stored in Dto object -> generate addressId for each address of objects
+          * put it back into usersDto
+         */
+        for (int i = 0; i < user.getAddresses().size(); i++){
+            AddressDTO address = user.getAddresses().get(i);
+            address.setUserDetails(user);
+            address.setAddressId(utils.generateAddressId(30));
+            user.getAddresses().set(i, address);
+        }
 
-        UserEntity userEntity = new UserEntity();
-        BeanUtils.copyProperties(user, userEntity);
+        ModelMapper modelMapper = new ModelMapper();
+        UserEntity userEntity = modelMapper.map(user, UserEntity.class);
+
+        log.info(" UserEntity {}", userEntity.getAddressEntities());
 
         String publicUserId = utils.generateUserId(30);
         userEntity.setUserId(publicUserId);
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
+        log.info("Before Saving UserEntity in DB {}", userEntity.getAddressEntities());
         UserEntity storedUserDetails = userRepository.save(userEntity);
+        log.info(" StoredUserDetails {}", storedUserDetails.getAddressEntities());
 
-        UserDto returnValue = new UserDto();
-        BeanUtils.copyProperties(storedUserDetails, returnValue);
+        UserDto returnValue = modelMapper.map(storedUserDetails, UserDto.class);
+
+        log.info(" returnValue {}", returnValue.getAddresses());
 
         return returnValue;
     }

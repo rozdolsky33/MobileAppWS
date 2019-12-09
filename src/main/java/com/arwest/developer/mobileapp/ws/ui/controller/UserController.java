@@ -8,6 +8,8 @@ import com.arwest.developer.mobileapp.ws.ui.model.response.RequestOperationName;
 import com.arwest.developer.mobileapp.ws.ui.model.response.RequestOperationStatus;
 import com.arwest.developer.mobileapp.ws.ui.model.response.UserRest;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
+    private final Logger log = LoggerFactory.getLogger(UserController.class);
 
 
     @Autowired
@@ -46,18 +50,20 @@ public class UserController {
 
         UserRest returnValue = new UserRest();
 
-        if (userDetails.getFirstName().isEmpty()) throw new NullPointerException("The Object is null");
-
-//        UserDto userDto = new UserDto();
-//        BeanUtils.copyProperties(userDetails, userDto);  // incoming request populates dto object
         ModelMapper modelMapper = new ModelMapper();
         UserDto userDto = modelMapper.map(userDetails, UserDto.class);
 
+        log.info("USER DTO modelMapper {}", userDto.getAddresses());
 
-        UserDto createUser = userService.createUser(userDto);
-        BeanUtils.copyProperties(createUser, returnValue);
+        UserDto createdUser = userService.createUser(userDto);
 
-        return returnValue ;
+        log.info(" Created User{}", createdUser.getAddresses());
+
+        returnValue = modelMapper.map(createdUser, UserRest.class);
+
+        log.info(" returned value {}", returnValue.getUserId());
+
+        return returnValue;
     }
     @PutMapping(value = "/{id}",
             consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
