@@ -1,9 +1,5 @@
 package com.arwest.developer.mobileapp.ws.io.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -42,8 +38,8 @@ public class UserEntity implements Serializable {
     @Column(nullable = false)
     private Boolean emailVerificationStatus = false;
 
-    @OneToMany(mappedBy="userEntity", cascade=CascadeType.ALL)
-    private List<AddressEntity>addressEntities;
+    @OneToMany(mappedBy="userEntity", cascade = CascadeType.ALL)
+    private List<AddressEntity>addresses;
 
 
     public long getId() {
@@ -118,11 +114,11 @@ public class UserEntity implements Serializable {
         this.emailVerificationStatus = emailVerificationStatus;
     }
 
-    public List<AddressEntity> getAddressEntities() {
-        return addressEntities;
+    public List<AddressEntity> getAddresses() {
+        return addresses;
     }
 
-    public void setAddressEntities(List<AddressEntity> addressEntities) {
-        this.addressEntities = addressEntities;
+    public void setAddresses(List<AddressEntity> addresses) {
+        this.addresses = addresses;
     }
 }

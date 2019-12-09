@@ -60,18 +60,17 @@ public class UserServiceImpl implements UserService {
         ModelMapper modelMapper = new ModelMapper();
         UserEntity userEntity = modelMapper.map(user, UserEntity.class);
 
-        log.info(" UserEntity {}", userEntity.getAddressEntities());
+
 
         String publicUserId = utils.generateUserId(30);
         userEntity.setUserId(publicUserId);
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
-        log.info("Before Saving UserEntity in DB {}", userEntity.getAddressEntities());
+
         UserEntity storedUserDetails = userRepository.save(userEntity);
-        log.info(" StoredUserDetails {}", storedUserDetails.getAddressEntities());
+
 
         UserDto returnValue = modelMapper.map(storedUserDetails, UserDto.class);
-
         log.info(" returnValue {}", returnValue.getAddresses());
 
         return returnValue;
