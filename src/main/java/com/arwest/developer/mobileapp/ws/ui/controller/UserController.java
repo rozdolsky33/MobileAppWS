@@ -7,6 +7,7 @@ import com.arwest.developer.mobileapp.ws.ui.model.response.OperationStatusModel;
 import com.arwest.developer.mobileapp.ws.ui.model.response.RequestOperationName;
 import com.arwest.developer.mobileapp.ws.ui.model.response.RequestOperationStatus;
 import com.arwest.developer.mobileapp.ws.ui.model.response.UserRest;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +48,11 @@ public class UserController {
 
         if (userDetails.getFirstName().isEmpty()) throw new NullPointerException("The Object is null");
 
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userDetails, userDto);  // incoming request populates dto object
+//        UserDto userDto = new UserDto();
+//        BeanUtils.copyProperties(userDetails, userDto);  // incoming request populates dto object
+        ModelMapper modelMapper = new ModelMapper();
+        UserDto userDto = modelMapper.map(userDetails, UserDto.class);
+
 
         UserDto createUser = userService.createUser(userDto);
         BeanUtils.copyProperties(createUser, returnValue);
