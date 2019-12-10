@@ -1,23 +1,32 @@
 package com.arwest.developer.mobileapp.ws.ui.controller;
 
+import com.arwest.developer.mobileapp.ws.service.AddressService;
 import com.arwest.developer.mobileapp.ws.service.UserService;
+import com.arwest.developer.mobileapp.ws.shared.dto.AddressDTO;
 import com.arwest.developer.mobileapp.ws.shared.dto.UserDto;
 import com.arwest.developer.mobileapp.ws.ui.model.request.UserDetailsRequestModel;
-import com.arwest.developer.mobileapp.ws.ui.model.response.OperationStatusModel;
-import com.arwest.developer.mobileapp.ws.ui.model.response.RequestOperationName;
-import com.arwest.developer.mobileapp.ws.ui.model.response.RequestOperationStatus;
-import com.arwest.developer.mobileapp.ws.ui.model.response.UserRest;
+import com.arwest.developer.mobileapp.ws.ui.model.response.*;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
@@ -25,6 +34,8 @@ public class UserController {
 
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
+    @Autowired
+    AddressService addressService;
 
     @Autowired
     private UserService userService;
@@ -53,15 +64,9 @@ public class UserController {
         ModelMapper modelMapper = new ModelMapper();
         UserDto userDto = modelMapper.map(userDetails, UserDto.class);
 
-        log.info("USER DTO modelMapper {}", userDto.getAddresses());
-
         UserDto createdUser = userService.createUser(userDto);
 
-        log.info(" Created User{}", createdUser.getAddresses());
-
         returnValue = modelMapper.map(createdUser, UserRest.class);
-
-        log.info(" returned value {}", returnValue.getUserId());
 
         return returnValue;
     }
@@ -115,4 +120,23 @@ public class UserController {
         return returnValue;
     }
 
+    @GetMapping(value = "/{id}/addresses",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
+    )
+    public List<AddressesRest> getUserAddresses(@PathVariable String id){
+
+        List<AddressesRest> addressesListRestModel = new ArrayList<>();
+
+        List<AddressDTO> addressesDTO = addressService.getAddresses(id);
+
+        if (addressesDTO != null && !addressesDTO.isEmpty()) {
+
+            Type listType = new TypeToken<List<AddressesRest>>() {
+            }.getType();
+            addressesListRestModel = new ModelMapper().map(addressesDTO, listType);
+
+        }
+
+        return addressesListRestModel;
+    }
 }

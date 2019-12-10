@@ -60,15 +60,11 @@ public class UserServiceImpl implements UserService {
         ModelMapper modelMapper = new ModelMapper();
         UserEntity userEntity = modelMapper.map(user, UserEntity.class);
 
-
-
         String publicUserId = utils.generateUserId(30);
         userEntity.setUserId(publicUserId);
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
-
         UserEntity storedUserDetails = userRepository.save(userEntity);
-
 
         UserDto returnValue = modelMapper.map(storedUserDetails, UserDto.class);
         log.info(" returnValue {}", returnValue.getAddresses());
@@ -113,7 +109,6 @@ public class UserServiceImpl implements UserService {
         userEntity.setLastName(user.getLastName());
 
         UserEntity updatedUserDetails = userRepository.save(userEntity);
-        //returnValue = new ModelMapper().map(updatedUserDetails,UserDto.class);
         BeanUtils.copyProperties(updatedUserDetails, returnValue);
 
         return returnValue;
