@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UserController {
 
-    private final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     AddressService addressService;
@@ -138,5 +137,25 @@ public class UserController {
         }
 
         return addressesListRestModel;
+    }
+
+    @GetMapping(path = "/{userId}/addresses/{addressId}", produces = { MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE, "application/hal+json" })
+    public AddressesRest getUserAddress(@PathVariable String userId, @PathVariable String addressId) {
+
+        AddressDTO addressesDto = addressService.getAddress(addressId);
+
+        ModelMapper modelMapper = new ModelMapper();
+//        Link addressLink = linkTo(methodOn(UserController.class).getUserAddress(userId, addressId)).withSelfRel();
+//        Link userLink = linkTo(UserController.class).slash(userId).withRel("user");
+//        Link addressesLink = linkTo(methodOn(UserController.class).getUserAddresses(userId)).withRel("addresses");
+
+        AddressesRest addressesRestModel = modelMapper.map(addressesDto, AddressesRest.class);
+
+//        addressesRestModel.add(addressLink);
+//        addressesRestModel.add(userLink);
+//        addressesRestModel.add(addressesLink);
+
+        return modelMapper.map(addressesDto, AddressesRest.class);
     }
 }

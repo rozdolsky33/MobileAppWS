@@ -12,5 +12,6 @@ public interface AddressRepository extends CrudRepository<AddressEntity, Long> {
 
     List<AddressEntity> findAllByUserDetails(UserEntity entity);  // address entity has to contain field name userDetails in order for this to work
                                                                      // Get queried by field name user details which hold an object with encapsulated userDetails
+    AddressEntity findByAddressId(String addressId);
 
 }
