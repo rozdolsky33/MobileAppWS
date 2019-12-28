@@ -63,6 +63,8 @@ public class UserServiceImpl implements UserService {
         String publicUserId = utils.generateUserId(30);
         userEntity.setUserId(publicUserId);
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userEntity.setEmailVerificationToken(utils.generateEmailVerificationToken(publicUserId));
+        userEntity.setEmailVerificationStatus(false);
 
         UserEntity storedUserDetails = userRepository.save(userEntity);
 
@@ -143,6 +145,25 @@ public class UserServiceImpl implements UserService {
         return returnValue;
     }
 
+    @Override
+    public boolean verifyEmailToken(String token) {
+        boolean returnValue =false;
+
+        //Find user by token
+        UserEntity userEntity = userRepository.findUserByEmailVerificationToken(token);
+
+        if (userEntity != null){
+            boolean hastokenExpired = Utils.hasTokenExpired(token);
+            if(!hastokenExpired){
+                userEntity.setEmailVerificationToken(null);
+                userEntity.setEmailVerificationStatus(Boolean.TRUE);
+                userRepository.save(userEntity);
+                returnValue = true;
+            }
+        }
+        return returnValue;
+    }
+
     /*
     UserServiceImpl implements UserService interface that extends org.springframework.security.core.userdetails.UserDetailsService;
     helper method to load a user in the process of sign in.
@@ -153,6 +174,9 @@ public class UserServiceImpl implements UserService {
 
         if(userEntity == null)throw new UsernameNotFoundException(email);
 
-        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>()); // Uses SpringFramework Object "User" to look for a user with email/password in the DB
+        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(),
+                userEntity.getEmailVerificationStatus(), true, true, true, new ArrayList<>());
+
+        //return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>()); // Uses SpringFramework Object "User" to look for a user with email/password in the DB
     }
 }
