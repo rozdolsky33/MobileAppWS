@@ -3,6 +3,7 @@ package com.arwest.developer.mobileapp.ws.service.impl;
 import com.arwest.developer.mobileapp.ws.io.entity.UserEntity;
 import com.arwest.developer.mobileapp.ws.io.repositories.UserRepository;
 import com.arwest.developer.mobileapp.ws.service.UserService;
+import com.arwest.developer.mobileapp.ws.shared.AmazonSES;
 import com.arwest.developer.mobileapp.ws.shared.Utils;
 import com.arwest.developer.mobileapp.ws.shared.dto.AddressDTO;
 import com.arwest.developer.mobileapp.ws.shared.dto.UserDto;
@@ -70,6 +71,9 @@ public class UserServiceImpl implements UserService {
 
         UserDto returnValue = modelMapper.map(storedUserDetails, UserDto.class);
         log.info(" returnValue {}", returnValue.getAddresses());
+
+        // Send an email to user to verify their email address
+        new AmazonSES().verifyEmail(returnValue);
 
         return returnValue;
     }

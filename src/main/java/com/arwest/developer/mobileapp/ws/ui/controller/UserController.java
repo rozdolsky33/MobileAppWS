@@ -47,6 +47,13 @@ public class UserController {
 
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
+
+
+    @GetMapping("healthz")
+    public String status (){
+        return "Status: OK";
+    }
+
     @GetMapping(value = "/{id}",
         produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE,
                 "application/hal+json"
