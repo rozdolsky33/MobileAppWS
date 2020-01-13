@@ -4,6 +4,7 @@ import com.arwest.developer.mobileapp.ws.service.AddressService;
 import com.arwest.developer.mobileapp.ws.service.UserService;
 import com.arwest.developer.mobileapp.ws.shared.dto.AddressDTO;
 import com.arwest.developer.mobileapp.ws.shared.dto.UserDto;
+import com.arwest.developer.mobileapp.ws.ui.model.request.PasswordResetRequestModel;
 import com.arwest.developer.mobileapp.ws.ui.model.request.UserDetailsRequestModel;
 import com.arwest.developer.mobileapp.ws.ui.model.response.*;
 
@@ -198,4 +199,24 @@ public class UserController {
         return returnValue;
     }
 
+    /*
+    http://localhost:8080/mobile-app-ws/users/password-reset-request
+     **/
+    @PostMapping(path = "password-reset-request",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+            )
+    public OperationStatusModel requestReset(@RequestBody PasswordResetRequestModel passwordResetRequestModel){
+        OperationStatusModel returnValue = new OperationStatusModel();
+
+        boolean operationResult = userService.requestPasswordReset(passwordResetRequestModel.getEmail());
+
+        returnValue.setOperationName(RequestOperationName.REQUEST_PASSWORD_RESET.name());
+        returnValue.setOperationResult(RequestOperationStatus.ERROR.name());
+
+        if(operationResult){
+            returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        }
+        return returnValue;
+    }
 }
