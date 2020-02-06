@@ -5,5 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface PasswordRestTokenRepository extends CrudRepository<PasswordResetTokenEntity, Long> {
 
+    PasswordResetTokenEntity findByToken(String token);
 
 }
