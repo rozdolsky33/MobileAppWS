@@ -32,15 +32,20 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers(HttpMethod.POST, SecurityConstants.PASSWORD_RESET_URL)
                 .permitAll()
-                .antMatchers(HttpMethod.GET, SecurityConstants.H2_CONSOLE)
+                .antMatchers(SecurityConstants.H2_CONSOLE)
                 .permitAll()
                 .antMatchers(HttpMethod.GET, SecurityConstants.HEALTH)
                 .permitAll()
                 .anyRequest().authenticated().and()
                 .addFilter(getAuthenticationFilter())
-                .addFilter(new AuthorizationFilter(authenticationManager()))
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // Stateless session
+                .addFilter(new AuthorizationFilter(authenticationManager()));
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // Stateless session
+
+        //disabling the frame options HTTP Header which prevents the browser to load page in HTML tags like a iFrame  or frame - security
+        // security reason is to make the H2 database console to open up in browser window will need to disable this option.
+        //Use ONLY for testing purposes with h2 database - need to comment out after
+        http.headers().frameOptions().disable();
     }
 
     @Override
