@@ -1,5 +1,6 @@
 package com.arwest.developer.mobileapp.ws.service.impl;
 
+import com.arwest.developer.mobileapp.ws.exceptions.UserServiceException;
 import com.arwest.developer.mobileapp.ws.io.entity.PasswordResetTokenEntity;
 import com.arwest.developer.mobileapp.ws.io.entity.UserEntity;
 import com.arwest.developer.mobileapp.ws.io.repositories.PasswordRestTokenRepository;
@@ -44,13 +45,16 @@ public class UserServiceImpl implements UserService {
     @Autowired
     PasswordRestTokenRepository passwordResetTokenRepository;
 
+    @Autowired
+    AmazonSES amazonSES;
+
 
     @Override
     public UserDto createUser(UserDto user) {
 
 
         if(userRepository.findUserByEmail(user.getEmail()) != null){
-            throw new RuntimeException("Record already exist");
+            throw new UserServiceException("Record already exist");
         }
          /**
           * Look through list of addresses that is stored in Dto object -> generate addressId for each address of objects
@@ -77,7 +81,7 @@ public class UserServiceImpl implements UserService {
         UserDto returnValue = modelMapper.map(storedUserDetails, UserDto.class);
         log.info(" returnValue {}", returnValue.getAddresses());
         // Send an email to user to verify their email address
-        new AmazonSES().verifyEmail(returnValue);
+        amazonSES.verifyEmail(returnValue);
 
         return returnValue;
     }

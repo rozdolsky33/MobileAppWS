@@ -1,8 +1,10 @@
 package com.arwest.developer.mobileapp.ws.service.impl;
 
+import com.arwest.developer.mobileapp.ws.exceptions.UserServiceException;
 import com.arwest.developer.mobileapp.ws.io.entity.AddressEntity;
 import com.arwest.developer.mobileapp.ws.io.entity.UserEntity;
 import com.arwest.developer.mobileapp.ws.io.repositories.UserRepository;
+import com.arwest.developer.mobileapp.ws.shared.AmazonSES;
 import com.arwest.developer.mobileapp.ws.shared.Utils;
 import com.arwest.developer.mobileapp.ws.shared.dto.AddressDTO;
 import com.arwest.developer.mobileapp.ws.shared.dto.UserDto;
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -35,6 +38,9 @@ class UserServiceImplTest {
 
     @Mock
     Utils utils;
+
+    @Mock
+    AmazonSES amazonSES;
 
     @Mock
     BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -78,7 +84,27 @@ class UserServiceImplTest {
         assertThrows(UsernameNotFoundException.class,
                 ()->{
                     userService.getUser("test@test.com");
+
         });
+    }
+
+    @Test
+    final void testCreateUser_CreateUserServiceException(){
+
+        when(userRepository.findUserByEmail(anyString())).thenReturn(userEntity);
+
+        UserDto userDto = new UserDto();
+        userDto.setAddresses(getAddressDto());
+        userDto.setFirstName("John");
+        userDto.setLastName("Wick");
+        userDto.setPassword("123456789");
+        userDto.setEmail("test@test.com");
+
+        assertThrows(UserServiceException.class,
+
+                ()->{
+                    userService.createUser(userDto);
+                });
     }
 
     @Test
@@ -89,6 +115,7 @@ class UserServiceImplTest {
         when(utils.generateUserId(anyInt())).thenReturn(userId);
         when(bCryptPasswordEncoder.encode(anyString())).thenReturn(encryptedPassword);
         when(userRepository.save(any(UserEntity.class))).thenReturn(userEntity);
+        Mockito.doNothing().when(amazonSES).verifyEmail(any(UserDto.class));
 
         UserDto userDto = new UserDto();
         userDto.setAddresses(getAddressDto());
