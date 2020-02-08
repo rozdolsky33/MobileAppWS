@@ -3,6 +3,7 @@ package com.arwest.developer.mobileapp.ws.shared;
 
 import com.arwest.developer.mobileapp.ws.security.SecurityConstants;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Service;
@@ -36,14 +37,22 @@ public class Utils {
 
     public static boolean hasTokenExpired (String token){
 
-        Claims claims = Jwts.parser()
-                .setSigningKey(SecurityConstants.getTokenSecret())
-                .parseClaimsJws(token).getBody();
+        boolean returnValue = false;
 
-        Date tokenExpirationDate = claims.getExpiration();
-        Date todayDate = new Date();
 
-        return tokenExpirationDate.before(todayDate);
+        try{
+            Claims claims = Jwts.parser()
+                    .setSigningKey(SecurityConstants.getTokenSecret())
+                    .parseClaimsJws(token).getBody();
+
+            Date tokenExpirationDate = claims.getExpiration();
+            Date todayDate = new Date();
+
+            returnValue = tokenExpirationDate.before(todayDate);
+        }catch (ExpiredJwtException ex){
+            return true;
+        }
+        return returnValue;
     }
     public String generateEmailVerificationToken(String userId){
         String token = Jwts.builder()
