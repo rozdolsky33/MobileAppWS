@@ -94,7 +94,7 @@ class UserServiceImplTest {
         when(userRepository.findUserByEmail(anyString())).thenReturn(userEntity);
 
         UserDto userDto = new UserDto();
-        userDto.setAddresses(getAddressDto());
+        userDto.setAddresses(getAddressesDto());
         userDto.setFirstName("John");
         userDto.setLastName("Wick");
         userDto.setPassword("123456789");
@@ -118,7 +118,7 @@ class UserServiceImplTest {
         Mockito.doNothing().when(amazonSES).verifyEmail(any(UserDto.class));
 
         UserDto userDto = new UserDto();
-        userDto.setAddresses(getAddressDto());
+        userDto.setAddresses(getAddressesDto());
         userDto.setFirstName("John");
         userDto.setLastName("Wick");
         userDto.setPassword("123456789");
@@ -136,7 +136,7 @@ class UserServiceImplTest {
 
     }
 
-    private List<AddressDTO> getAddressDto() {
+    private List<AddressDTO> getAddressesDto() {
         AddressDTO addressDTO = new AddressDTO();
         addressDTO.setType("shipping");
         addressDTO.setCity("New York");
@@ -160,7 +160,7 @@ class UserServiceImplTest {
 
     private List<AddressEntity>getAddressesEntity(){
 
-        List<AddressDTO> addresses = getAddressDto();
+        List<AddressDTO> addresses = getAddressesDto();
 
         Type listType = new TypeToken<List<AddressEntity>>(){}.getType();
 
