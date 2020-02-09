@@ -1,6 +1,7 @@
 package com.arwest.developer.mobileapp.ws.security;
 
 import com.arwest.developer.mobileapp.ws.service.UserService;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,6 +10,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
@@ -21,9 +27,12 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
+    //Enable CORS with cors()
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests()
+        http
+                .cors().and()
+                .csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
                 .permitAll()
                 .antMatchers(HttpMethod.GET, SecurityConstants.VERIFICATION_EMAIL_URL)
@@ -38,9 +47,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .anyRequest().authenticated().and()
                 .addFilter(getAuthenticationFilter())
-                .addFilter(new AuthorizationFilter(authenticationManager()));
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // Stateless session
+                .addFilter(new AuthorizationFilter(authenticationManager()))
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // Stateless session
 
         //disabling the frame options HTTP Header which prevents the browser to load page in HTML tags like a iFrame  or frame - security
         // security reason is to make the H2 database console to open up in browser window will need to disable this option.
@@ -57,6 +66,22 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager());
         filter.setFilterProcessesUrl("/users/login");
         return filter;
+    }
+    //Enable CORS with cors()
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource(){
+
+        final CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE","OPTIONS"));
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 
 }
