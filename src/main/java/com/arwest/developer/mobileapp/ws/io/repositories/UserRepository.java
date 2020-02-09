@@ -16,9 +16,14 @@ import java.util.List;
 @Repository
 public interface UserRepository extends PagingAndSortingRepository<UserEntity, Long> {
 
+    /*************************************** JPA *******************************************************************************/
+
     UserEntity findUserByEmail(String email);
     UserEntity findByUserId(String userId);
     UserEntity findUserByEmailVerificationToken(String token);
+
+
+   /*************************************** NATIVE SQL *************************************************************************/
 
     @Query(value="select * from Users u where u.EMAIL_VERIFICATION_STATUS = 'true'",
             countQuery="select count(*) from Users u where u.EMAIL_VERIFICATION_STATUS = 'true'",
@@ -42,5 +47,20 @@ public interface UserRepository extends PagingAndSortingRepository<UserEntity, L
     @Query(value="update users u set u.EMAIL_VERIFICATION_STATUS=:emailVerificationStatus where u.user_id=:userId", nativeQuery=true)
     void updateUserEmailVerificationStatus(@Param("emailVerificationStatus") boolean emailVerificationStatus,
                                            @Param("userId") String userId);
+
+
+    /*************************************** JPQL *******************************************************************************/
+
+    @Query("select user from UserEntity user where user.userId =:userId")
+    UserEntity findUserEntitiesByUserId(@Param("userId") String userId);
+
+    @Query("select user.firstName, user.lastName from UserEntity user where user.userId =:userId")
+    List<Object[]>getUserEntitiesById(@Param("userId") String userId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE UserEntity u set u.emailVerificationStatus =:emailVerificationStatus where u.userId =:userId" )
+    void updateUserEntityEmailVerificationStatus(@Param("emailVerificationStatus") boolean emailVerificationStatus,
+                                                 @Param("userId") String userId);
 
 }

@@ -28,10 +28,11 @@ class UserRepositoryTest {
 
     static boolean recordsCreated = false;
 
+
     @BeforeEach
     void setUp() throws Exception {
 
-        if(!recordsCreated) createRecrods();
+        if(!recordsCreated) createRecords();
     }
 
 
@@ -122,7 +123,51 @@ class UserRepositoryTest {
 
     }
 
-    private void createRecrods()
+    @Test
+    final void testFindUserEntitiesByUserId(){
+
+        String userId ="1a2b3c";
+
+        UserEntity userEntity = userRepository.findUserEntitiesByUserId(userId);
+
+        assertNotNull(userEntity);
+        assertTrue(userEntity.getUserId().equals(userId));
+
+    }
+
+    @Test
+    final void testGetUserEntitiesById(){
+
+        String userId ="1a2b3c";
+        List<Object[]> records = userRepository.getUserEntitiesById(userId);
+
+        assertNotNull(records);
+
+        Object[] userDerails = records.get(0);
+
+        String firstName = String.valueOf(userDerails[0]);
+        String lastName = String.valueOf(userDerails[1]);
+
+        assertNotNull(firstName);
+        assertNotNull(lastName);
+    }
+
+    @Test
+    final void testUpdateUserEntityEmailVerificationStatus()
+    {
+        boolean newEmailVerificationStatus = false;
+
+        userRepository.updateUserEntityEmailVerificationStatus(newEmailVerificationStatus, "1a2b3c");
+
+        UserEntity storedUserDetails = userRepository.findByUserId("1a2b3c");
+
+        boolean storedEmailVerificationStatus = storedUserDetails.getEmailVerificationStatus();
+
+        assertTrue(storedEmailVerificationStatus == newEmailVerificationStatus);
+
+    }
+
+    private void createRecords()
     {
         // Prepare User Entity
         UserEntity userEntity = new UserEntity();
