@@ -12,8 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
+
 
 
 
@@ -31,7 +30,7 @@ class UtilsTest {
     @Test
     void generateUserId() {
 
-       String userId = utils.generateUserId(30);
+        String userId = utils.generateUserId(30);
         String userId2 = utils.generateUserId(30);
 
        assertNotNull(userId);
