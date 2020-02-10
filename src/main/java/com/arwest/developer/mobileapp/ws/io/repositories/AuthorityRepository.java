@@ -1,0 +1,11 @@
+package com.arwest.developer.mobileapp.ws.io.repositories;
+
+import com.arwest.developer.mobileapp.ws.io.entity.AuthorityEntity;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface AuthorityRepository extends CrudRepository<AuthorityEntity, Long> {
+
+    AuthorityEntity findByName(String name);
+}
