@@ -5,6 +5,7 @@ import com.arwest.developer.mobileapp.ws.io.entity.PasswordResetTokenEntity;
 import com.arwest.developer.mobileapp.ws.io.entity.UserEntity;
 import com.arwest.developer.mobileapp.ws.io.repositories.PasswordRestTokenRepository;
 import com.arwest.developer.mobileapp.ws.io.repositories.UserRepository;
+import com.arwest.developer.mobileapp.ws.security.UserPrincipal;
 import com.arwest.developer.mobileapp.ws.service.UserService;
 import com.arwest.developer.mobileapp.ws.shared.AmazonSES;
 import com.arwest.developer.mobileapp.ws.shared.Utils;
@@ -242,8 +243,10 @@ public class UserServiceImpl implements UserService {
 
         if(userEntity == null)throw new UsernameNotFoundException(email);
 
-        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(),
-                userEntity.getEmailVerificationStatus(), true, true, true, new ArrayList<>());
+        return new UserPrincipal(userEntity);
+
+//        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(),
+//                userEntity.getEmailVerificationStatus(), true, true, true, new ArrayList<>());
 
         //return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>()); // Uses SpringFramework Object "User" to look for a user with email/password in the DB
     }
