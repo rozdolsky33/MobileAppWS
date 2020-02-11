@@ -2,6 +2,7 @@ package com.arwest.developer.mobileapp.ws.ui.controller;
 
 import com.arwest.developer.mobileapp.ws.service.AddressService;
 import com.arwest.developer.mobileapp.ws.service.UserService;
+import com.arwest.developer.mobileapp.ws.shared.Roles;
 import com.arwest.developer.mobileapp.ws.shared.dto.AddressDTO;
 import com.arwest.developer.mobileapp.ws.shared.dto.UserDto;
 import com.arwest.developer.mobileapp.ws.ui.model.request.PasswordResetModel;
@@ -11,6 +12,8 @@ import com.arwest.developer.mobileapp.ws.ui.model.response.*;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -23,6 +26,9 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -50,6 +56,7 @@ public class UserController {
         return "Status: OK";
     }
 
+    @PostAuthorize("hasRole('ADMIN') or returnObject.userId == principal.userId")
     @GetMapping(value = "/{id}",
         produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE,
                 "application/hal+json"
@@ -75,6 +82,8 @@ public class UserController {
         log.info("creating user = {}" + userDetails.getEmail());
         UserDto createdUser = userService.createUser(userDto);
 
+        userDto.setRoles(new HashSet<>(Arrays.asList(Roles.ROLE_USER.name())));
+
         UserRest returnValue = modelMapper.map(createdUser, UserRest.class);
 
         return new Resource<>(returnValue);
@@ -99,6 +108,9 @@ public class UserController {
         return new Resource<>(returnValue);
     }
 
+    //@Secured("ROLE_ADMIN")
+    //@PreAuthorize("hasRole('ADMIN')") //(hasAuthority('DELETE_AUTHORITY')
+   // @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.userId")
     @DeleteMapping(value = "/{id}",
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
     )

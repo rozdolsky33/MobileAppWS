@@ -2,8 +2,10 @@ package com.arwest.developer.mobileapp.ws.service.impl;
 
 import com.arwest.developer.mobileapp.ws.exceptions.UserServiceException;
 import com.arwest.developer.mobileapp.ws.io.entity.PasswordResetTokenEntity;
+import com.arwest.developer.mobileapp.ws.io.entity.RoleEntity;
 import com.arwest.developer.mobileapp.ws.io.entity.UserEntity;
 import com.arwest.developer.mobileapp.ws.io.repositories.PasswordRestTokenRepository;
+import com.arwest.developer.mobileapp.ws.io.repositories.RoleRepository;
 import com.arwest.developer.mobileapp.ws.io.repositories.UserRepository;
 import com.arwest.developer.mobileapp.ws.security.UserPrincipal;
 import com.arwest.developer.mobileapp.ws.service.UserService;
@@ -20,13 +22,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -48,6 +51,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     AmazonSES amazonSES;
+
+    @Autowired
+    RoleRepository roleRepository;
 
 
     @Override
@@ -76,6 +82,20 @@ public class UserServiceImpl implements UserService {
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userEntity.setEmailVerificationToken(utils.generateEmailVerificationToken(publicUserId));
         userEntity.setEmailVerificationStatus(false);
+
+        //SET ROLES
+        Collection<RoleEntity>roleEntities = new HashSet<>();
+        for(String role : user.getRoles()){
+
+            RoleEntity roleEntity =roleRepository.findByName(role);
+
+            if (roleEntity != null){
+                roleEntities.add(roleEntity);
+            }
+
+        }
+
+        userEntity.setRoles(roleEntities);
 
         UserEntity storedUserDetails = userRepository.save(userEntity);
 

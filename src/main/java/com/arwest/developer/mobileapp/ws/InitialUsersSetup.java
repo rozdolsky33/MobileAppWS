@@ -6,6 +6,7 @@ import com.arwest.developer.mobileapp.ws.io.entity.UserEntity;
 import com.arwest.developer.mobileapp.ws.io.repositories.AuthorityRepository;
 import com.arwest.developer.mobileapp.ws.io.repositories.RoleRepository;
 import com.arwest.developer.mobileapp.ws.io.repositories.UserRepository;
+import com.arwest.developer.mobileapp.ws.shared.Roles;
 import com.arwest.developer.mobileapp.ws.shared.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -43,8 +44,8 @@ public class InitialUsersSetup {
         AuthorityEntity writeAuthority = createAuthority("WRITE_AUTHORITY");
         AuthorityEntity deleteAuthority = createAuthority("DELETE_AUTHORITY");
 
-       RoleEntity roleUser = creatRole("ROLE_USER", Arrays.asList(readAuthority, writeAuthority));
-       RoleEntity roleAdmin = creatRole("ADMIN_USER", Arrays.asList(readAuthority, writeAuthority, deleteAuthority));
+       creatRole(Roles.ROLE_USER.name(), Arrays.asList(readAuthority, writeAuthority));
+       RoleEntity roleAdmin = creatRole(Roles.ROLE_ADMIN.name(), Arrays.asList(readAuthority, writeAuthority, deleteAuthority));
 
        if (roleAdmin == null)return;
 
@@ -54,8 +55,7 @@ public class InitialUsersSetup {
         adminUser.setEmail("rrozdolsky86@gmail.com");
         adminUser.setEmailVerificationStatus(true);
         adminUser.setUserId(utils.generateUserId(30));
-        adminUser.setPassword("123456789");
-        adminUser.setEncryptedPassword(bCryptPasswordEncoder.encode("12345678"));
+        adminUser.setEncryptedPassword(bCryptPasswordEncoder.encode("123456789"));
         adminUser.setRoles(Arrays.asList(roleAdmin));
 
         userRepository.save(adminUser);

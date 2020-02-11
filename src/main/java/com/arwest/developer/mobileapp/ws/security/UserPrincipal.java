@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public class UserPrincipal implements UserDetails {
@@ -16,20 +17,22 @@ public class UserPrincipal implements UserDetails {
 
     private static final long serialVersionUID = 9173359976625202331L;
 
-    UserEntity userEntity;
+    private UserEntity userEntity;
+    private String userId;
 
     public UserPrincipal(UserEntity userEntity) {
         this.userEntity = userEntity;
+        this.userId = userEntity.getUserId();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        List<GrantedAuthority>authorities = new ArrayList<>();
+        Collection<GrantedAuthority>authorities = new HashSet<>();
+        Collection<AuthorityEntity> authorityEntities = new HashSet<>();
 
         //Get user Roles
         Collection<RoleEntity> roles = userEntity.getRoles();
-        List<AuthorityEntity> authorityEntities = new ArrayList<>();
 
         if(roles == null) return authorities;
 
@@ -73,5 +76,21 @@ public class UserPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() {
         return this.userEntity.getEmailVerificationStatus();
+    }
+
+    public UserEntity getUserEntity() {
+        return userEntity;
+    }
+
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }
