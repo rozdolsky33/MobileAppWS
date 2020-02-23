@@ -87,7 +87,6 @@ class UserServiceImplTest {
 
         });
     }
-
     @Test
     final void testCreateUser_CreateUserServiceException(){
 
@@ -106,7 +105,6 @@ class UserServiceImplTest {
                     userService.createUser(userDto);
                 });
     }
-
     @Test
     final void testCreateUser(){
 
@@ -157,11 +155,9 @@ class UserServiceImplTest {
 
         return addresses;
     }
-
     private List<AddressEntity>getAddressesEntity(){
 
         List<AddressDTO> addresses = getAddressesDto();
-
         Type listType = new TypeToken<List<AddressEntity>>(){}.getType();
 
         return new ModelMapper().map(addresses, listType);

@@ -28,7 +28,6 @@ import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -47,8 +46,6 @@ public class UserController {
     private UserService userService;
 
     private final Logger log = LoggerFactory.getLogger(UserController.class);
-
-
 
     @GetMapping("healthz")
   //  @CrossOrigin(origins = {"http://localhost:8081, http://localhost:8081"}) // communication with port 8081 on the localhost. host/port has to be allowed
@@ -75,7 +72,7 @@ public class UserController {
             consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE
             })
-    public  Resource<UserRest>createUser(@RequestBody UserDetailsRequestModel userDetails) throws Exception {
+    public  Resource<UserRest>createUser(@RequestBody UserDetailsRequestModel userDetails){
 
         ModelMapper modelMapper = new ModelMapper();
         UserDto userDto = modelMapper.map(userDetails, UserDto.class);
@@ -108,9 +105,6 @@ public class UserController {
         return new Resource<>(returnValue);
     }
 
-    //@Secured("ROLE_ADMIN")
-    //@PreAuthorize("hasRole('ADMIN')") //(hasAuthority('DELETE_AUTHORITY')
-   // @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.userId")
     @DeleteMapping(value = "/{id}",
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
     )

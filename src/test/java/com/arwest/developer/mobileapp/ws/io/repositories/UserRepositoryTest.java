@@ -35,7 +35,6 @@ class UserRepositoryTest {
         if(!recordsCreated) createRecords();
     }
 
-
     @Test
     final void testGetVerifiedUsers(){
 
@@ -46,7 +45,6 @@ class UserRepositoryTest {
         List<UserEntity>userEntities = pages.getContent();
         assertNotNull(userEntities);
         assertTrue(userEntities.size() == 2);
-
     }
 
     @Test

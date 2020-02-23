@@ -38,10 +38,7 @@ class UtilsTest {
         );
        assertTrue(userId.length() == 30);
        assertTrue(!userId.equalsIgnoreCase(userId2));
-
-
     }
-
     @Test
    final void hasTokenNotExpired() {
         String token = utils.generateEmailVerificationToken("939ridggkdsbkruDRRGD");

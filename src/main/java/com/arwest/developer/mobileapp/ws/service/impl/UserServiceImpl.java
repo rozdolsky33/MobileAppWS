@@ -13,6 +13,7 @@ import com.arwest.developer.mobileapp.ws.shared.AmazonSES;
 import com.arwest.developer.mobileapp.ws.shared.Utils;
 import com.arwest.developer.mobileapp.ws.shared.dto.AddressDTO;
 import com.arwest.developer.mobileapp.ws.shared.dto.UserDto;
+import com.arwest.developer.mobileapp.ws.ui.model.response.ErrorMessage;
 import com.arwest.developer.mobileapp.ws.ui.model.response.ErrorMessages;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -61,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
 
         if(userRepository.findUserByEmail(user.getEmail()) != null){
-            throw new UserServiceException("Record already exist");
+            throw new UserServiceException(ErrorMessages.RECORD_ALREADY_EXISTS.getErrorMessage());
         }
          /**
           * Look through list of addresses that is stored in Dto object -> generate addressId for each address of objects
