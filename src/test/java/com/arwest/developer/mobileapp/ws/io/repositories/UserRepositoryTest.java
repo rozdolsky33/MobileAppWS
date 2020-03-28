@@ -172,7 +172,7 @@ class UserRepositoryTest {
         userEntity.setFirstName("John");
         userEntity.setLastName("Whick");
         userEntity.setUserId("1a2b3c");
-        userEntity.setPassword("123456789");
+//        userEntity.setPassword("123456789");
         userEntity.setEncryptedPassword("xxx");
         userEntity.setEmail("test1@test.com");
         userEntity.setEmailVerificationStatus(true);
@@ -198,7 +198,7 @@ class UserRepositoryTest {
         userEntity2.setFirstName("John");
         userEntity2.setLastName("Whick");
         userEntity2.setUserId("1a2b3cddddd");
-        userEntity2.setPassword("123456789");
+//        userEntity2.setPassword("123456789");
         userEntity2.setEncryptedPassword("xxx");
         userEntity2.setEmail("test2@test.com");
         userEntity2.setEmailVerificationStatus(true);
